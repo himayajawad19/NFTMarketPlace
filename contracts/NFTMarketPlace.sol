@@ -29,7 +29,7 @@ contract NFTMarketPlace is ERC721URIStorage {
     );
     mapping(uint256 => nftsStruct) private nfts;
     uint256 private _tokenId;
-      uint256 private _nftsAvailableforsale;
+    uint256 private _nftsAvailableforsale;
 
     function setNft(
         uint256 _setTokenId,
@@ -56,7 +56,7 @@ contract NFTMarketPlace is ERC721URIStorage {
         );
     }
 
-// creating nft
+    // creating nft
     function createNft(
         string memory _tokenUrI,
         string memory _title,
@@ -86,16 +86,66 @@ contract NFTMarketPlace is ERC721URIStorage {
         return _nftsAvailableforsale;
     }
 
-    function buyNft(uint256 _buyTokenId)public payable returns(bool){
-        require(nfts[_buyTokenId].owner == address(this) ,"NFT Unavailable");
-        require(msg.value >= nfts[_buyTokenId].price, "Insufficient funds to buy NFT");
+    function buyNft(uint256 _buyTokenId) public payable returns (bool) {
+        require(nfts[_buyTokenId].owner == address(this), "NFT Unavailable");
+        require(
+            msg.value >= nfts[_buyTokenId].price,
+            "Insufficient funds to buy NFT"
+        );
         payable(nfts[_tokenId].seller).transfer(msg.value);
         nfts[_tokenId].subscribers.push(msg.sender);
+        _nftsAvailableforsale--;
 
         return true;
     }
 
-   
+    // fetch available nfts for sale, that will be displayed on the market place.
+    function getSubscriptions() public view returns (nftsStruct[] memory) {
+        uint256 nftCount = _tokenId;
+        nftsStruct[] memory subscriptions = new nftsStruct[](nftCount);
+
+        for (uint256 i; i < nftCount; i++) {
+            if (nfts[i].owner == address(this)) {
+                subscriptions[i] = nfts[i];
+            }
+        }
+        return subscriptions;
+    }
+    //Nfts a user had already subcribed to
+    function getCollectables() public view returns (nftsStruct[] memory) {
+        uint256 nftCount = _tokenId;
+        nftsStruct[] memory subscriptions = new nftsStruct[](nftCount);
+
+        for (uint256 i; i < nftCount; i++) {
+            uint256 subscribers = nfts[i].subscribers.length;
+            for (uint256 j; j < subscribers; j++) {
+                if (nfts[i].subscribers[j] == msg.sender) {
+                    subscriptions[i] = nfts[i];
+                }
+            }
+        }
+        return subscriptions;
+    }
+
+    //NFTs a user has created
+    function getNFTS() public view returns (nftsStruct[] memory) {
+        uint256 nftCount = _tokenId;
+        nftsStruct[] memory nftsCreated = new nftsStruct[](nftCount);
+        for (uint256 i; i < nftCount; i++) {
+            if (nfts[i].seller == payable(msg.sender)) {
+                nftsCreated[i] = nfts[i];
+            }
+        }
+        return nftsCreated;
+    }
+
+    //Details of a single NFTs
+    function getIndividualNft(
+        uint256 _individualNftTokenId
+    ) public view returns (nftsStruct memory) {
+        return nfts[_individualNftTokenId];
+    }
+
     function likeSubscription(uint256 _likeTokenId) public {
         nfts[_likeTokenId].likes += 1;
     }
