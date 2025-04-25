@@ -1,26 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:nftmarketplace/screens/splashscreen/splashView.dart';
+import 'package:nftmarketplace/config/routes.dart';
+import 'package:nftmarketplace/screens/introSlider/introSliderView.dart';
+import 'package:nftmarketplace/screens/splash/splashView.dart';
 
 void main() {
-  runApp(const ProviderScope(child:MyApp()));
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return 
-    ScreenUtilInit(
-      builder:  (_ , child) {
-      return MaterialApp(
-        title: 'Flutter Demo',
-        debugShowCheckedModeBanner: false,
-        home: const SplashView(),
-      );}
+    return ScreenUtilInit(
+      splitScreenMode: true,
+      // designSize: const Size(402, 874),
+      minTextAdapt: true,
+      builder: (_, child) {
+        return MaterialApp(
+          title: 'minted',
+          debugShowCheckedModeBanner: false,
+
+          initialRoute: Splashview.route,
+          onGenerateRoute: generateRoute,
+        );
+      },
     );
   }
 }
