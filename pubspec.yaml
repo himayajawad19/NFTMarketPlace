@@ -3,7 +3,6 @@ description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
-publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -39,10 +38,6 @@ dependencies:
   flutter_riverpod: ^2.6.1
   flutter_screenutil: ^5.9.3
   flutter_svg: ^2.1.0
-  riverpod: ^2.6.1
-  flutter_riverpod: ^2.6.1
-  flutter_screenutil: ^5.9.3
-  flutter_svg: ^2.1.0
 
 dev_dependencies:
   flutter_test:
@@ -69,6 +64,7 @@ flutter:
   assets:
     - assets/sparkle.svg
     - assets/profile.jpg
+    - assets/images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
