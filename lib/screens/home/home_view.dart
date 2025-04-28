@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:nftmarketplace/screens/home/home_view_model.dart';
+import 'package:nftmarketplace/screens/profile/profile_view.dart';
+import 'package:nftmarketplace/screens/subcribe/subscribe_view.dart';
 
 class HomeView extends ConsumerWidget {
   const HomeView({super.key});
@@ -9,6 +12,7 @@ class HomeView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final homeVm = ref.read(homeProvider.notifier);
     return SafeArea(
       child: Scaffold(
         body: Container(
@@ -29,130 +33,15 @@ class HomeView extends ConsumerWidget {
           ),
 
           child: SingleChildScrollView(
-            physics: ScrollPhysics(),
+            physics: AlwaysScrollableScrollPhysics(),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.15,
-                  width: double.infinity,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        left: 80.w,
-                        bottom: 20.h,
-                        child: Container(
-                          height: 350.h,
-                          width: 280.h,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              width: 1,
-                              color: const Color.fromARGB(115, 117, 117, 117),
-                            ),
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 150.w,
-                        bottom: 12.h,
+                _buildHeaderSection(context),
+                SizedBox(height: 16.h),
+                _nftSlide(homeVm),
 
-                        child: Container(
-                          height: 290.h,
-                          width: 280.h,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              width: 1,
-                              color: const Color.fromARGB(115, 117, 117, 117),
-                            ),
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 250.w,
-                        bottom: 50.h,
-
-                        child: SvgPicture.asset(
-                          'assets/sparkle.svg',
-                          height: 20.h,
-                          color: Color(0xFFaeff8d),
-                        ),
-                      ),
-                      Positioned(
-                        left: 220.w,
-                        bottom: 30.h,
-
-                        child: SvgPicture.asset(
-                          'assets/sparkle.svg',
-                          height: 10.h,
-                          color: Color(0xFFaeff8d),
-                        ),
-                      ),
-                      Positioned(
-                        right: 1.w,
-                        left: 1.w,
-                        bottom: 20.h,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 0,
-                          ),
-                          child: Row(
-                            children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Hey Olivia",
-                                    style: TextStyle(
-                                      fontSize: 22.sp,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                  Text(
-                                    "38.5M+ items in market ",
-                                    style: TextStyle(
-                                      fontSize: 14.sp,
-                                      color: Colors.white70,
-                                      fontWeight: FontWeight.w300,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Spacer(),
-                              Container(
-                                height: 50.h,
-                                width: 50.h,
-                                padding: EdgeInsets.all(4),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    width: 1,
-                                    color: Colors.white70,
-                                  ),
-                                ),
-                                child: ClipOval(
-                                  child: Image.asset(
-                                    "assets/profile.jpg",
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.22,
-                  width: double.infinity,
-                  child: _nftSlide(),
-                ),
                 SizedBox(height: 8.h),
                 Container(
                   height: MediaQuery.of(context).size.height * 0.331,
@@ -172,13 +61,12 @@ class HomeView extends ConsumerWidget {
                           ),
                         ),
                       ),
-                      Expanded(child: _topCollectionSlide()),
+                      Expanded(child: _topCollectionSlide(homeVm)),
                     ],
                   ),
                 ),
                 SizedBox(height: 8.h),
                 Container(
-                  
                   width: double.infinity,
                   child: Column(
                     children: [
@@ -199,17 +87,17 @@ class HomeView extends ConsumerWidget {
                           Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Text(
-                                "View More",
-                                style: TextStyle(
-                                  color: Color(0xff9cfd96),
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w400,
-                                ),
+                              "View More",
+                              style: TextStyle(
+                                color: Color(0xff9cfd96),
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w400,
                               ),
+                            ),
                           ),
                         ],
                       ),
-                       _featuredlide()
+                      _buildFeaturedCreatorsList(),
                     ],
                   ),
                 ),
@@ -221,26 +109,152 @@ class HomeView extends ConsumerWidget {
     );
   }
 
-  Widget _nftSlide() {
+  Widget _buildHeaderSection(BuildContext context) {
     return SizedBox(
-      height: 50.h, // Increased from 10.h for better visibility
+      width: double.infinity,
+      child: Stack(
+        children: [
+          Positioned(
+            left: 80.w,
+            bottom: 20.h,
+            child: Container(
+              height: 350.h,
+              width: 280.h,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  width: 1,
+                  color: const Color.fromARGB(115, 117, 117, 117),
+                ),
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+          Positioned(
+            left: 150.w,
+            bottom: 12.h,
+
+            child: Container(
+              height: 290.h,
+              width: 280.h,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  width: 1,
+                  color: const Color.fromARGB(115, 117, 117, 117),
+                ),
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+          Positioned(
+            left: 250.w,
+            bottom: 50.h,
+
+            child: SvgPicture.asset(
+              'assets/sparkle.svg',
+              height: 20.h,
+              color: Color(0xFFaeff8d),
+            ),
+          ),
+          Positioned(
+            left: 220.w,
+            bottom: 30.h,
+            child: SvgPicture.asset(
+              'assets/sparkle.svg',
+              height: 10.h,
+              color: Color(0xFFaeff8d),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            child: Row(
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Hey Olivia",
+                      style: TextStyle(
+                        fontSize: 22.sp,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Icon(Icons.wallet_rounded, color: Colors.white70),
+                        SizedBox(width: 2.w),
+                        Text(
+                          "13290.01 ETH",
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            color: Colors.white70,
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Spacer(),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, ProfileView.route);
+                  },
+                  child: Container(
+                    height: 50.h,
+                    width: 50.h,
+                    padding: EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(width: 1, color: Colors.white70),
+                    ),
+                    child: ClipOval(
+                      child: Image.asset(
+                        "assets/profile.jpg",
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _nftSlide(HomeViewModel homeVm) {
+    return SizedBox(
+      height: 150.h,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: 5,
+        itemCount: homeVm.topCollection.length,
         itemBuilder: (context, index) {
           return Padding(
             padding:
                 index == 0
                     ? EdgeInsets.fromLTRB(8, 0, 16, 0)
                     : EdgeInsets.fromLTRB(0, 0, 16, 0),
-            child: SizedBox(
-              height: 40.h,
-              width: 240.w,
-
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(30),
-                child: Image.asset("assets/profile.jpg", fit: BoxFit.cover),
-              ),
+            child: Stack(
+              children: [
+                SizedBox(
+                  height: 180.h,
+                  width: 240.w,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(30),
+                    child: Image.asset(
+                      homeVm.topCollection[index],
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: _subscribeButton(context),
+                ),
+              ],
             ),
           );
         },
@@ -248,13 +262,14 @@ class HomeView extends ConsumerWidget {
     );
   }
 
-  Widget _topCollectionSlide() {
+  Widget _topCollectionSlide(HomeViewModel homeVm) {
     return SizedBox(
-      height: 50.h, // Increased from 10.h for better visibility
+      height: 50.h,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: 5,
+        itemCount: homeVm.topCollection.length,
         itemBuilder: (context, index) {
+          homeVm.topCollection.sort((a, b) => b.compareTo(a));
           return Padding(
             padding:
                 index == 0
@@ -277,7 +292,7 @@ class HomeView extends ConsumerWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
                       child: Image.asset(
-                        "assets/profile.jpg",
+                        homeVm.topCollection[index],
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -295,10 +310,7 @@ class HomeView extends ConsumerWidget {
                           ),
                         ),
                         Spacer(),
-                        Icon(
-                          Icons.favorite_border_outlined,
-                          color: Colors.white,
-                        ),
+                        Icon(Icons.favorite, color: Colors.red.shade900),
                         SizedBox(width: 2.w),
                         Text(
                           "1K",
@@ -320,92 +332,71 @@ class HomeView extends ConsumerWidget {
     );
   }
 
-  Widget _featuredlide() {
-    return SizedBox(
-      height: 50.h, // Increased from 10.h for better visibility
-      child: ListView.builder(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        itemCount: 5,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: EdgeInsets.fromLTRB(0, 10, 16, 0),
-            child: SizedBox(
-              height: 50.h,
-              width: 240.w,
-
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 0,
+  Widget _buildFeaturedCreatorsList() {
+    return Column(
+      children: List.generate(5, (index) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                height: 50.h,
+                width: 50.h,
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(width: 1, color: Colors.white70),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: ClipOval(
+                  child: Image.asset("assets/profile.jpg", fit: BoxFit.cover),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      height: 50.h,
-                      width: 50.h,
-                      padding: EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(width: 1, color: Colors.white70),
-                      ),
-                      child: ClipOval(
-                        child: Image.asset(
-                          "assets/profile.jpg",
-                          fit: BoxFit.cover,
-                        ),
+                    Text(
+                      "Olivia Silver",
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Olivia Silver",
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          Text(
-                            "10K Followers",
-                            style: TextStyle(
-                              fontSize: 11.sp,
-                              color: Colors.white70,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
-                        ],
+                    Text(
+                      "10K Followers",
+                      style: TextStyle(
+                        fontSize: 11.sp,
+                        color: Colors.white70,
+                        fontWeight: FontWeight.w300,
                       ),
                     ),
-
-                    Spacer(),
-                    centerButton(),
                   ],
                 ),
               ),
-            ),
-          );
-        },
-      ),
+              const Spacer(),
+              followButton(),
+            ],
+          ),
+        );
+      }),
     );
   }
 
-  Widget centerButton() {
+  Widget followButton() {
     return GestureDetector(
       onTap: () {},
 
       child: Padding(
         padding: const EdgeInsets.all(6.0),
         child: Container(
-          height: 60.h,
+          height: 30.h,
           width: 100.w,
           decoration: BoxDecoration(
-            color: const Color(0xff1d3c34).withOpacity(0.7),
+            color: const Color(0xFFaeff8d).withOpacity(0.7),
             borderRadius: BorderRadius.circular(50.0),
             border: Border.all(width: 1, color: Colors.white24),
           ),
@@ -426,5 +417,56 @@ class HomeView extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  Widget _subscribeButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, SubscribeView.route);
+      },
+
+      child: Padding(
+        padding: const EdgeInsets.all(6.0),
+        child: Container(
+          height: 30.h,
+          width: 100.w,
+          decoration: BoxDecoration(
+            color: Colors.black,
+            borderRadius: BorderRadius.circular(50.0),
+            border: const Border(
+              right: BorderSide(
+                color: Color(0xFFaeff8d), // Color of the left border
+                width: 2, // Thickness of the left border
+              ),
+              top: BorderSide(
+                color: Color(0xFFaeff8d), // Color of the left border
+                width: 1, // Thickness of the left border
+              ),
+              
+            ),
+
+           
+          ),
+
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Center(
+              child: Text(
+                "Subscribe",
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget searchBar() {
+    return SizedBox();
   }
 }
