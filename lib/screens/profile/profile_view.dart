@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:nftmarketplace/screens/profile/createNft/createNftView.dart';
 import 'package:nftmarketplace/widgets/bg_widget.dart';
 
 class ProfileView extends ConsumerWidget {
@@ -19,7 +20,7 @@ class ProfileView extends ConsumerWidget {
               children: [
                 _buildBackButtonSection(context),
                 _buildProfileHeader(),
-                _profileInfo(),
+                _profileInfo(context),
                 _buildProfileInfoGrid(),
               ],
             ),
@@ -100,7 +101,7 @@ class ProfileView extends ConsumerWidget {
     );
   }
 
-  Widget _profileInfo() {
+  Widget _profileInfo(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 22),
       child: Column(
@@ -117,7 +118,7 @@ class ProfileView extends ConsumerWidget {
                 ),
               ),
               const Spacer(),
-              followButton(),
+              followButton(context),
             ],
           ),
           Row(
@@ -204,9 +205,11 @@ class ProfileView extends ConsumerWidget {
     );
   }
 
-  Widget followButton() {
+  Widget followButton(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.pushNamed(context, Createnftview.route);
+      },
       child: Padding(
         padding: const EdgeInsets.all(6.0),
         child: Container(
@@ -219,7 +222,7 @@ class ProfileView extends ConsumerWidget {
           ),
           child: Center(
             child: Text(
-              "Add NFT",
+              "Create NFT",
               style: TextStyle(
                 fontSize: 12.sp,
                 color: Colors.white,

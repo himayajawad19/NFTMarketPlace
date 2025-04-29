@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nftmarketplace/screens/home/home_view.dart';
+import 'package:nftmarketplace/services/web3Services.dart';
+import 'package:nftmarketplace/utils/appConstants.dart';
 
 class IntroSlider extends ConsumerStatefulWidget {
   const IntroSlider({super.key});
@@ -16,22 +18,23 @@ class _IntroSliderState extends ConsumerState<IntroSlider> {
   bool _animateCircles = false;
   bool _showText = false;
 
+  final _web3 = Web3services();
+
   @override
   void initState() {
     super.initState();
-     Future.delayed(const Duration(milliseconds: 700), () {
-     
+    Future.delayed(const Duration(milliseconds: 700), () {
       setState(() {
-      _showText = true;
-    });
+        _showText = true;
+      });
     });
     Future.delayed(const Duration(milliseconds: 1000), () {
       setState(() {
         _animateCircles = true;
       });
       setState(() {
-      _showText = true;
-    });
+        _showText = true;
+      });
     });
   }
 
@@ -55,8 +58,7 @@ class _IntroSliderState extends ConsumerState<IntroSlider> {
           ),
         ),
         child: Center(
-          child: 
-          Column(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
@@ -195,11 +197,11 @@ class _IntroSliderState extends ConsumerState<IntroSlider> {
                       left: 10.w,
                       right: 10.w,
                       bottom: 20.h,
-                      child: 
-                      AnimatedSlide(
-                            duration: Duration(milliseconds: 1000),
-                            offset: _showText?Offset(0, 0) : Offset(0, 0.3), 
-                        child: centerButton()),
+                      child: AnimatedSlide(
+                        duration: Duration(milliseconds: 1000),
+                        offset: _showText ? Offset(0, 0) : Offset(0, 0.3),
+                        child: centerButton(_web3),
+                      ),
                     ),
                   ],
                 ),
@@ -211,52 +213,70 @@ class _IntroSliderState extends ConsumerState<IntroSlider> {
     );
   }
 
-Widget centerText() {
-  return AnimatedSlide(
-    duration: Duration(milliseconds: 1000),
-    offset: _showText ? Offset(0, 0) : Offset(0, 0.3), // slides up
-    curve: Curves.linearToEaseOut,
-    child: AnimatedOpacity(
-      duration: Duration(milliseconds: 800),
-      opacity: _showText ? 1.0 : 0.0,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 40),
-        child: 
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Discover,", style: TextStyle(fontSize: 40.sp, color: Colors.white)),
-            Text("Collection,", style: TextStyle(fontSize: 40.sp, color: Colors.white)),
-            Row(
-              children: [
-                Text("and", style: TextStyle(fontSize: 40.sp, color: Colors.white)),
-                SizedBox(width: 6.w),
-                Text("Sell", style: TextStyle(fontSize: 40.sp, color: Color(0xFFaeff8d))),
-              ],
-            ),
-            Text("Awesome", style: TextStyle(fontSize: 40.sp, color: Colors.white)),
-            Text("Abstract NFTs", style: TextStyle(fontSize: 40.sp, color: Colors.white)),
-            SizedBox(height: 20.h),
-            Text(
-              "is the world's first and largest NFT \nmarketplace",
-              style: TextStyle(
-                fontSize: 14.sp,
-                color: Colors.white,
-                fontWeight: FontWeight.w300,
+  Widget centerText() {
+    return AnimatedSlide(
+      duration: Duration(milliseconds: 1000),
+      offset: _showText ? Offset(0, 0) : Offset(0, 0.3), // slides up
+      curve: Curves.linearToEaseOut,
+      child: AnimatedOpacity(
+        duration: Duration(milliseconds: 800),
+        opacity: _showText ? 1.0 : 0.0,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 40),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Discover,",
+                style: TextStyle(fontSize: 40.sp, color: Colors.white),
               ),
-            ),
-          ],
+              Text(
+                "Collection,",
+                style: TextStyle(fontSize: 40.sp, color: Colors.white),
+              ),
+              Row(
+                children: [
+                  Text(
+                    "and",
+                    style: TextStyle(fontSize: 40.sp, color: Colors.white),
+                  ),
+                  SizedBox(width: 6.w),
+                  Text(
+                    "Sell",
+                    style: TextStyle(fontSize: 40.sp, color: Color(0xFFaeff8d)),
+                  ),
+                ],
+              ),
+              Text(
+                "Awesome",
+                style: TextStyle(fontSize: 40.sp, color: Colors.white),
+              ),
+              Text(
+                "Abstract NFTs",
+                style: TextStyle(fontSize: 40.sp, color: Colors.white),
+              ),
+              SizedBox(height: 20.h),
+              Text(
+                "is the world's first and largest NFT \nmarketplace",
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
-  Widget centerButton() {
+  Widget centerButton(Web3services _web3) {
     return GestureDetector(
       onTap: () {
-       Navigator.pushNamed(context, HomeView.route);
+        _web3.addProfile();
+        Navigator.pushNamed(context, HomeView.route);
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),

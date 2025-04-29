@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:nftmarketplace/screens/home/home_state.dart';
 import 'package:nftmarketplace/screens/home/home_view_model.dart';
 import 'package:nftmarketplace/screens/profile/profile_view.dart';
 import 'package:nftmarketplace/screens/subcribe/subscribe_view.dart';
@@ -13,6 +14,7 @@ class HomeView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final homeVm = ref.read(homeProvider.notifier);
+    final homeState = ref.watch(homeProvider);
     return SafeArea(
       child: Scaffold(
         body: Container(
@@ -38,7 +40,7 @@ class HomeView extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildHeaderSection(context),
+                _buildHeaderSection(context, homeState),
                 SizedBox(height: 16.h),
                 _nftSlide(homeVm),
 
@@ -109,7 +111,7 @@ class HomeView extends ConsumerWidget {
     );
   }
 
-  Widget _buildHeaderSection(BuildContext context) {
+  Widget _buildHeaderSection(BuildContext context, HomeState homeState) {
     return SizedBox(
       width: double.infinity,
       child: Stack(
@@ -185,7 +187,7 @@ class HomeView extends ConsumerWidget {
                         Icon(Icons.wallet_rounded, color: Colors.white70),
                         SizedBox(width: 2.w),
                         Text(
-                          "13290.01 ETH",
+                          "${homeState.balance} ETH",
                           style: TextStyle(
                             fontSize: 14.sp,
                             color: Colors.white70,

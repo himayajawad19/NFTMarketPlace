@@ -4,7 +4,7 @@ pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
-contract NFTMarketPlace is ERC721URIStorage {
+contract NFTMarketplace is ERC721URIStorage {
     constructor() ERC721("NFT Magazine Subscription", "MEG") {}
     struct nftsStruct {
         string title;
