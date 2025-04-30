@@ -5,12 +5,13 @@ import 'package:nftmarketplace/screens/home/home_state.dart';
 import 'package:nftmarketplace/services/web3Services.dart';
 
 class HomeViewModel extends StateNotifier<HomeState> {
-  HomeViewModel() : super(HomeState(balance: 0.0)) {
+  HomeViewModel() : super(HomeState()) {
     init();
   }
   final web3 = Web3services();
   void init() async {
-    state.copyWith(balance: web3.balance);
+    await web3.init();
+     state = state.copyWith(balance: web3.balance);
     log(web3.balance.toString());
   }
 

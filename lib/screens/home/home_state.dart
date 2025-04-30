@@ -1,8 +1,8 @@
 class HomeState {
-  final double balance;
+  final double? balance;
 
   HomeState({
-    required this.balance,
+     this.balance,
   });
 
   HomeState copyWith({

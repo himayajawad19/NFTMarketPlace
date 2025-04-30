@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:nftmarketplace/screens/profile/createNft/createNFTstate.dart'
+    show Createnftstate;
+import 'package:nftmarketplace/screens/profile/createNft/createNftVm.dart';
 import 'package:nftmarketplace/widgets/bg_widget.dart';
 
 class Createnftview extends ConsumerWidget {
@@ -9,6 +13,8 @@ class Createnftview extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final vm = ref.read(createNftProvider.notifier);
+    final state = ref.watch(createNftProvider);
     return SafeArea(
       child: GestureDetector(
         onTap: () {
@@ -23,8 +29,8 @@ class Createnftview extends ConsumerWidget {
                 children: [
                   _buildBackButtonSection(context),
                   _buildTitleText(),
-                  _createNftForm(),
-                  _buildDisplayContainer(),
+                  _createNftForm(vm),
+                  _buildDisplayContainer(vm, state),
 
                   _subscribeButton(),
                 ],
@@ -75,7 +81,7 @@ class Createnftview extends ConsumerWidget {
     );
   }
 
-  Widget _createNftForm() {
+  Widget _createNftForm(Createnftvm vm) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
       child: Column(
@@ -92,16 +98,14 @@ class Createnftview extends ConsumerWidget {
           ),
           SizedBox(height: 2.h),
           TextField(
+            controller: vm.titleController,
             decoration: InputDecoration(
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(
-                  color: Colors.white70, 
-                  width: 2.0,
-                ),
+                borderSide: BorderSide(color: Colors.white70, width: 2.0),
               ),
             ),
           ),
@@ -116,16 +120,14 @@ class Createnftview extends ConsumerWidget {
           ),
           SizedBox(height: 2.h),
           TextField(
+            controller: vm.descriptionController,
             decoration: InputDecoration(
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(
-                  color: Colors.white70,
-                  width: 2.0,
-                ),
+                borderSide: BorderSide(color: Colors.white70, width: 2.0),
               ),
             ),
           ),
@@ -143,28 +145,42 @@ class Createnftview extends ConsumerWidget {
     );
   }
 
-  Widget _buildDisplayContainer() {
+  Widget _buildDisplayContainer(Createnftvm vm, Createnftstate state) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
         child: GestureDetector(
-          child: Container(
-            height: 250.h,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(width: 1, color: Colors.white70),
-            ),
-            child: Center(
-              child: Text(
-                "Tap to generate",
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  color: Colors.white.withOpacity(0.7),
-                ),
-              ),
-            ),
-          ),
+          onTap: () {
+            vm.pickImage(ImageSource.gallery);
+          },
+          child:
+              state.imageFile != null
+                  ? Image.file(state.imageFile!)
+                  : Container(
+                    height: 250.h,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(width: 1, color: Colors.white70),
+                    ),
+                    child: Center(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.image, color: Colors.white70),
+                          SizedBox(width: 2.w),
+                          Text(
+                            "Tap to generate",
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: Colors.white.withOpacity(0.7),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
         ),
       ),
     );

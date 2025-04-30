@@ -187,7 +187,7 @@ class HomeView extends ConsumerWidget {
                         Icon(Icons.wallet_rounded, color: Colors.white70),
                         SizedBox(width: 2.w),
                         Text(
-                          "${homeState.balance} ETH",
+                          "${homeState.balance?.toStringAsFixed(2)??0.0} ETH",
                           style: TextStyle(
                             fontSize: 14.sp,
                             color: Colors.white70,

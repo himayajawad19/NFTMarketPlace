@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:nftmarketplace/screens/home/home_view.dart';
 import 'package:nftmarketplace/screens/introSlider/introSliderView.dart';
 
 class Splashview extends ConsumerStatefulWidget {
@@ -24,7 +25,7 @@ class _SplashviewState extends ConsumerState<Splashview> {
       });
     });
     Future.delayed(const Duration(milliseconds: 5000), () {
-    Navigator.pushReplacementNamed(context, IntroSlider.route);
+    Navigator.pushReplacementNamed(context, HomeView.route);
     });
   }
 

@@ -274,9 +274,9 @@ class _IntroSliderState extends ConsumerState<IntroSlider> {
 
   Widget centerButton(Web3services _web3) {
     return GestureDetector(
-      onTap: () {
-        _web3.addProfile();
-        Navigator.pushNamed(context, HomeView.route);
+      onTap: () async{
+        await _web3.addProfile();
+        await Navigator.pushNamed(context, HomeView.route);
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),

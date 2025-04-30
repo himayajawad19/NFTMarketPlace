@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nftmarketplace/screens/profile/createNft/createNftView.dart';
+import 'package:nftmarketplace/screens/profile/profile_state.dart';
+import 'package:nftmarketplace/screens/profile/profile_vm.dart';
 import 'package:nftmarketplace/widgets/bg_widget.dart';
 
 class ProfileView extends ConsumerWidget {
@@ -10,6 +12,8 @@ class ProfileView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final vm = ref.read(profileProvider.notifier);
+    final state = ref.watch(profileProvider);
     return SafeArea(
       child: Scaffold(
         body: BackgroundWithCircles(
@@ -21,7 +25,7 @@ class ProfileView extends ConsumerWidget {
                 _buildBackButtonSection(context),
                 _buildProfileHeader(),
                 _profileInfo(context),
-                _buildProfileInfoGrid(),
+                _buildProfileInfoGrid(state),
               ],
             ),
           ),
@@ -153,7 +157,7 @@ class ProfileView extends ConsumerWidget {
     );
   }
 
-  Widget _buildProfileInfoGrid() {
+  Widget _buildProfileInfoGrid(ProfileState state) {
     return GridView.count(
       crossAxisCount: 2,
       crossAxisSpacing: 20,
@@ -163,8 +167,8 @@ class ProfileView extends ConsumerWidget {
       physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.all(16),
       children: [
-        _buildGridItem("Following", "120"),
-        _buildGridItem("Followers", "1.5K"),
+        _buildGridItem("Following", state.Following ??"0"),
+        _buildGridItem("Followers", state.Followers??"2"),
         _buildGridItem("Posts", "35"),
         _buildGridItem("Likes", "428"),
         
