@@ -11,6 +11,9 @@ class HomeViewModel extends StateNotifier<HomeState> {
   final web3 = Web3services();
   void init() async {
     await web3.init();
+    await web3.getProfile();
+    await web3.getAllProfiles();
+  
      state = state.copyWith(balance: web3.balance);
     log(web3.balance.toString());
   }
@@ -23,6 +26,10 @@ class HomeViewModel extends StateNotifier<HomeState> {
     "assets/images/5.jpg",
     "assets/images/6.jpg",
   ];
+
+  Future<void> followProfile(String address) async{
+  state = state.copyWith(follow: await web3.followProfile(address));
+  }
 }
 
 final homeProvider =

@@ -1,9 +1,19 @@
 import 'package:web3dart/web3dart.dart';
 
 class ProfileModel {
-  EthereumAddress? address;
-  List<EthereumAddress>? follower;
-  List<EthereumAddress>? following;
+  String? address;
+  String? name;
+  String? desc;
+  List<String>? follower;
+  List<String>? following;
+  String? publicKey;
 
-  ProfileModel({this.address, this.follower, this.following});
+  ProfileModel({
+    this.publicKey,
+    this.name,
+    this.desc,
+    this.address,
+    this.follower,
+    this.following,
+  });
 }

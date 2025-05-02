@@ -6,6 +6,7 @@ import 'package:nftmarketplace/screens/home/home_state.dart';
 import 'package:nftmarketplace/screens/home/home_view_model.dart';
 import 'package:nftmarketplace/screens/profile/profile_view.dart';
 import 'package:nftmarketplace/screens/subcribe/subscribe_view.dart';
+import 'package:nftmarketplace/utils/appConstants.dart';
 
 class HomeView extends ConsumerWidget {
   const HomeView({super.key});
@@ -99,7 +100,7 @@ class HomeView extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      _buildFeaturedCreatorsList(),
+                      _buildFeaturedCreatorsList(homeVm, homeState),
                     ],
                   ),
                 ),
@@ -187,7 +188,7 @@ class HomeView extends ConsumerWidget {
                         Icon(Icons.wallet_rounded, color: Colors.white70),
                         SizedBox(width: 2.w),
                         Text(
-                          "${homeState.balance?.toStringAsFixed(2)??0.0} ETH",
+                          "${homeState.balance?.toStringAsFixed(2) ?? 0.0} ETH",
                           style: TextStyle(
                             fontSize: 14.sp,
                             color: Colors.white70,
@@ -291,6 +292,7 @@ class HomeView extends ConsumerWidget {
                   SizedBox(
                     height: 120.h,
                     width: 170.w,
+
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
                       child: Image.asset(
@@ -334,9 +336,9 @@ class HomeView extends ConsumerWidget {
     );
   }
 
-  Widget _buildFeaturedCreatorsList() {
+  Widget _buildFeaturedCreatorsList(HomeViewModel vm, HomeState state) {
     return Column(
-      children: List.generate(5, (index) {
+      children: List.generate(Appconstants.allUsers.length, (index) {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           child: Row(
@@ -361,7 +363,7 @@ class HomeView extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Olivia Silver",
+                      Appconstants.allUsers[index].name ?? "0",
                       style: TextStyle(
                         fontSize: 16.sp,
                         color: Colors.white,
@@ -369,7 +371,7 @@ class HomeView extends ConsumerWidget {
                       ),
                     ),
                     Text(
-                      "10K Followers",
+                      "${Appconstants.allUsers[index].follower ?? ""}Followers",
                       style: TextStyle(
                         fontSize: 11.sp,
                         color: Colors.white70,
@@ -380,7 +382,7 @@ class HomeView extends ConsumerWidget {
                 ),
               ),
               const Spacer(),
-              followButton(),
+              followButton(vm, Appconstants.allUsers[index].address!, state),
             ],
           ),
         );
@@ -388,9 +390,11 @@ class HomeView extends ConsumerWidget {
     );
   }
 
-  Widget followButton() {
+  Widget followButton(HomeViewModel vm, String address, HomeState state) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        vm.followProfile(address);
+      },
 
       child: Padding(
         padding: const EdgeInsets.all(6.0),
@@ -406,14 +410,31 @@ class HomeView extends ConsumerWidget {
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: Center(
-              child: Text(
-                "Follow",
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+              child:
+                  state.follow == true
+                      ? Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "Following",
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          SizedBox(width: 4),
+                          Icon(Icons.check, color: Colors.white, size: 14.sp),
+                        ],
+                      )
+                      : Text(
+                        "Follow",
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
             ),
           ),
         ),
@@ -444,10 +465,7 @@ class HomeView extends ConsumerWidget {
                 color: Color(0xFFaeff8d), // Color of the left border
                 width: 1, // Thickness of the left border
               ),
-              
             ),
-
-           
           ),
 
           child: Padding(

@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nftmarketplace/screens/profile/createNft/createNftView.dart';
 import 'package:nftmarketplace/screens/profile/profile_state.dart';
 import 'package:nftmarketplace/screens/profile/profile_vm.dart';
+import 'package:nftmarketplace/utils/appConstants.dart';
 import 'package:nftmarketplace/widgets/bg_widget.dart';
 
 class ProfileView extends ConsumerWidget {
@@ -43,11 +44,7 @@ class ProfileView extends ConsumerWidget {
             onTap: () {
               Navigator.pop(context);
             },
-            child: Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-              size: 20.sp,
-            ),
+            child: Icon(Icons.arrow_back, color: Colors.white, size: 20.sp),
           ),
           SizedBox(width: 4.w),
           Text(
@@ -56,6 +53,32 @@ class ProfileView extends ConsumerWidget {
               color: Colors.white,
               fontSize: 16.sp,
               fontWeight: FontWeight.w400,
+            ),
+          ),
+          Spacer(),
+          Container(
+            height: 30.h,
+            width: 70.w,
+            decoration: BoxDecoration(
+              color: Colors.grey.withOpacity(0.5),
+              borderRadius: BorderRadius.circular(50.0),
+            ),
+            child: Center(
+              child: Row(
+                 mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.edit, color: Colors.white, size: 16.sp),
+                  SizedBox(width: 3.w),
+                  Text(
+                    "Edit",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -76,7 +99,9 @@ class ProfileView extends ConsumerWidget {
               borderRadius: BorderRadius.circular(10),
               color: Colors.white,
               image: const DecorationImage(
-                image: AssetImage("assets/images/1.jpg"), // Update your image path
+                image: AssetImage(
+                  "assets/images/1.jpg",
+                ), // Update your image path
                 fit: BoxFit.cover,
               ),
             ),
@@ -114,7 +139,7 @@ class ProfileView extends ConsumerWidget {
           Row(
             children: [
               Text(
-                "@7ONDER",
+                "@${Appconstants.profilemodel.name}",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 18.sp,
@@ -131,7 +156,7 @@ class ProfileView extends ConsumerWidget {
                 height: 20.h,
                 width: 130.w,
                 child: Text(
-                  "0xAb5801a7D398351b8bE11C439e05",
+                  Appconstants.profilemodel.publicKey ??"",
                   style: TextStyle(
                     color: Colors.white70.withOpacity(0.4),
                     fontSize: 16.sp,
@@ -145,7 +170,7 @@ class ProfileView extends ConsumerWidget {
           ),
           SizedBox(height: 20.h),
           Text(
-            'Blockchain enthusiast and technology explorer. Passionate about decentralized systems, smart contracts, and creating innovative digital solutions.',
+            'Blockchain enthusiast and technology explorer. Passionate about decentralized systems, smart contracts, and creating innovative digital solutions. And ${Appconstants.profilemodel.desc ??''}.',
             style: TextStyle(
               color: Colors.white70.withOpacity(0.4),
               fontSize: 15.sp,
@@ -167,11 +192,10 @@ class ProfileView extends ConsumerWidget {
       physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.all(16),
       children: [
-        _buildGridItem("Following", state.Following ??"0"),
-        _buildGridItem("Followers", state.Followers??"2"),
+        _buildGridItem("Following", state.Following ?? "0"),
+        _buildGridItem("Followers", state.Followers ?? "2"),
         _buildGridItem("Posts", "35"),
         _buildGridItem("Likes", "428"),
-        
       ],
     );
   }

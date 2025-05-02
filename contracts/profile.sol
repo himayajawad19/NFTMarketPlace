@@ -4,13 +4,17 @@ pragma solidity ^0.8.9;
 contract Profile {
     struct profileModel {
         address id;
+        string name;
+        string description;
         address[] followers;
         address[] following;
     }
 
     uint256 profileCount;
+    address[] private profileAddresses;
+
     mapping(address => profileModel) public profiles;
-    event ProfileCreated(address indexed user);
+    event ProfileCreated(address indexed user, string name, string desc);
     event Followed(address indexed follower, address indexed followed);
     event Unfollowed(address indexed follower, address indexed unfollowed);
 
@@ -19,14 +23,22 @@ contract Profile {
         return noOfUsers;
     }
     // add profile
-    function addProfile() public {
+    function addProfile(string memory name, string memory desc) public {
         require(
             profiles[msg.sender].id == address(0),
             "User profile already exists."
         );
+
         profiles[msg.sender].id = msg.sender;
+        profiles[msg.sender].name = name;
+        profiles[msg.sender].description = desc;
+        profileAddresses.push(msg.sender);
         profileCount++;
-        emit ProfileCreated(msg.sender);
+        emit ProfileCreated(
+            msg.sender,
+            profiles[msg.sender].name,
+            profiles[msg.sender].description
+        );
     }
 
     // add follower/following
@@ -60,6 +72,26 @@ contract Profile {
                 arr[i] = arr[arr.length - 1];
                 arr.pop();
                 break;
+            }
+        }
+    }
+
+    function getAllUsers() public view returns (profileModel[] memory) {
+        profileModel[] memory allProfiles = new profileModel[](
+            profileAddresses.length
+        );
+
+        for (uint i = 0; i < profileAddresses.length; i++) {
+            allProfiles[i] = profiles[profileAddresses[i]];
+        }
+
+        return allProfiles;
+    }
+    function recoverExistingProfiles(address[] memory knownAddresses) public {
+        for (uint i = 0; i < knownAddresses.length; i++) {
+            address user = knownAddresses[i];
+            if (profiles[user].id != address(0)) {
+                profileAddresses.push(user);
             }
         }
     }

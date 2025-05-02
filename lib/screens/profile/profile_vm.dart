@@ -14,7 +14,6 @@ class ProfileVm extends StateNotifier<ProfileState> {
  final web3 = Web3services();
   void init() async {
     await web3.init();
-    await web3.getProfile();
     state = state.copyWith(Followers: Appconstants.profilemodel.follower?.length.toString() , Following: Appconstants.profilemodel.following?.length.toString() );
   }
 
